@@ -67,7 +67,6 @@ class Deal
     private ?string $amount = null;
 
     #[ORM\Column(length: 255)]
-    #[ORM\JoinColumn(nullable: false)]
     #[Groups(['deal:read'])]
     private ?string $status = null;
 

@@ -67,7 +67,7 @@ class Deal
     private ?string $amount = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['deal:read'])]
+    #[Groups(['deal:read', 'deal:write'])]
     private ?string $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'deals')]

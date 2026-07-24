@@ -28,7 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: "object.getAssignedManager() == user || is_granted('ROLE_ADMIN')"
         ),
         new Post(
-            uriTemplate: '/client/my',
+            uriTemplate: '/client',
             controller: ClientCreateAction::class,
             input: ClientDTO::class,
             name: 'clientCreate',

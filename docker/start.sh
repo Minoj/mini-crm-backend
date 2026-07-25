@@ -1,4 +1,6 @@
 #!/bin/bash
+cd /var/www/html
+
 touch .env
 
 if [ ! -f config/jwt/private.pem ]; then

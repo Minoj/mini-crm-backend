@@ -1,4 +1,6 @@
 #!/bin/bash
+touch .env
+
 if [ ! -f config/jwt/private.pem ]; then
     mkdir -p config/jwt
     php bin/console lexik:jwt:generate-keypair --no-interaction

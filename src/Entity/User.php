@@ -8,7 +8,10 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\Controller\UserChangeRoleAction;
 use App\Controller\UserCreateAction;
+use App\Controller\UserMeController;
+use App\DTO\ChangeRoleDTO;
 use App\DTO\RegisterDTO;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -19,33 +22,47 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+
 #[ApiResource(
     operations: [
         new GetCollection(
-        ),
-        new Get(
-            security: "object == user || is_granted('ROLE_ADMIN')"
+            security: "is_granted('ROLE_ADMIN')"
         ),
         new Post(
             uriTemplate: '/users/my',
             controller: UserCreateAction::class,
             input: RegisterDTO::class,
-            validate: false,
-            name: 'createUser'
+            validate: false
+        ),
+        new Get(
+            uriTemplate: '/users/me',
+            controller: UserMeController::class,
+            security: "is_granted('IS_AUTHENTICATED_FULLY')",
+            read: false,
+            name: 'user_me'
         ),
         new Post(
             uriTemplate: '/users/auth',
             name: 'auth',
         ),
-        new Patch(
+        new Get(
             security: "object == user || is_granted('ROLE_ADMIN')"
+        ),
+        new Patch(
+            uriTemplate: '/users/{id}/role',
+            controller: UserChangeRoleAction::class,
+            security: "is_granted('ROLE_ADMIN')",
+            input: ChangeRoleDTO::class,
+            read: false,
+            deserialize: true,
+            name: 'api_users_change_role',
         ),
         new Delete(
             security: "object == user || is_granted('ROLE_ADMIN')"
         )
     ],
     normalizationContext: ['groups' => ['user:read']],
-    denormalizationContext: ['groups' => ['user:write']],
+    denormalizationContext: ['groups' => ['user:write', 'user:role:write']],
 
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -66,7 +83,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column(type: 'json')]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read', 'user:role:write'])]
     private array $roles = [];
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -134,7 +151,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -179,8 +196,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function __serialize(): array
     {
-        $data = (array) $this;
-        $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
+        $data = (array)$this;
+        $data["\0" . self::class . "\0password"] = hash('crc32c', $this->password);
 
         return $data;
     }

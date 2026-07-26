@@ -64,6 +64,7 @@ class Deal
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     #[Groups(['deal:read', 'deal:write'])]
     #[Assert\Positive()]
+    #[Assert\LessThanOrEqual(99999999.99)]
     private ?string $amount = null;
 
     #[ORM\Column(length: 255)]

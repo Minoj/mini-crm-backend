@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5432/mini_crm</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="mini_crm_db_y84z@dpg-d9iaa5rtqb8s738jvi7g-a.singapore-postgres.render.com" uuid="e577dd16-f206-4299-bb23-185afd38961f">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://dpg-d9iaa5rtqb8s738jvi7g-a.singapore-postgres.render.com:5432/mini_crm_db_y84z</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
